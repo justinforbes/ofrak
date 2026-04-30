@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ## [Unreleased](https://github.com/redballoonsecurity/ofrak/tree/master)
 
 ### Added
+- Add `FlashGeometryHeuristicAnalyzer` that infers `FlashAttributes` (page/OOB geometry) for raw NAND dumps tagged as `FlashResource`, using YAFFS2, Linux MTD large-page OOB, small-page OOB density, and exact Hamming ECC verification as signals ([#737](https://github.com/redballoonsecurity/ofrak/pull/737))
 - Add `FlashFieldType.SPARE` and `FlashSpareAreaResource` so `FlashOobResourceUnpacker` can preserve OOB bytes without ECC/Checksum computation, and extend `FlashLogicalDataResourcePacker` to consume the sibling `FlashSpareAreaResource` so the original OOB layout is reconstructed verbatim during repacking ([#738](https://github.com/redballoonsecurity/ofrak/pull/738))
 - Add cramfs unpacker and packer, using `fsck.cramfs` and `mkfs.cramfs` from `util-linux` 2.38.1 ([#719](https://github.com/redballoonsecurity/ofrak/pull/719))
 - Add ApkAnalyzer to extract package metadata from Android APKs using aapt ([#716](https://github.com/redballoonsecurity/ofrak/pull/716))
@@ -17,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Add missing component docstrings and improve existing docstrings ([#654](https://github.com/redballoonsecurity/ofrak/pull/654))
 
 ### Changed
+- Resources tagged as `FlashResource` now have their `FlashAttributes` inferred automatically by the new `FlashGeometryHeuristicAnalyzer` and become unpackable via `FlashResourceUnpacker` without user-supplied geometry. Workflows that previously attached a hand-crafted `FlashAttributes` should verify the inferred geometry matches. If no standard geometry fits the image, the analyzer logs a warning and returns no attributes so other analyzers (e.g. `BinwalkAnalyzer`) can still run ([#737](https://github.com/redballoonsecurity/ofrak/pull/737))
 - Remove test dependencies that are already in the global `requirements-dev.txt` ([#695](https://github.com/redballoonsecurity/ofrak/pull/695))
 
 ### Fixed
